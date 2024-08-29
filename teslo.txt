@@ -1,0 +1,56 @@
+1. instale prisma 
+
+npm i --save-dev prisma
+
+2. cambie a mi bd de prisma el env
+
+3. inicie prisma 
+
+npx prisma init
+
+4. instale prisma client 
+
+npm install @prisma/client
+
+5. instale componente de prisma nest g m prisma... s...
+
+instalamos component de prisma, con servicio y modulo 
+
+6. genere un recurso de producto 
+
+nest g res products
+
+7. genere en el schema el producto
+
+8. migre a la bd 
+
+npx prisma migrate --name producto
+
+9. aplique un generate 
+
+npx prisma generate
+
+10. instale para los validationpipes 
+
+npm i --save class-validator class-transformer 
+
+11. configure en main 
+
+ app.setGlobalPrefix('api');
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    })
+  );
+
+12. conigure en app.module
+
+13. imports: [ConfigModule.forRoot(),
+
+14 .defini dto de createproduct
+
+si defino en el squema de prisma que algunos campos son opcionales debo hacer lo mismo en eld to 
+
+15 envie producto y se creo tambien valide los campos
