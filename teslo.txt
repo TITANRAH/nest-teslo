@@ -54,3 +54,37 @@ npm i --save class-validator class-transformer
 si defino en el squema de prisma que algunos campos son opcionales debo hacer lo mismo en eld to 
 
 15 envie producto y se creo tambien valide los campos
+
+
+para paginar 
+
+creo un dto de paginacion con offset y limit con las validaciones y transformaciones correspondientes 
+
+llamo al dto en el findall del controller
+
+ @Get()
+  findAll(@Query() paginationDto: PaginationDto) {
+
+    console.log(paginationDto)
+    return this.productsService.findAll(paginationDto);
+  }
+
+recibo en el servicio la paginationDto
+
+destructuro limit y offset del parametro paginationDto en el servicio findAll
+
+
+uso el meetodo findMany y le paso al take y al skip limit y offset 
+
+ const { limit = 10, offset = 0 } = paginationDto;
+    return this.prismaService.product.findMany({
+      take: limit,
+      skip: offset,
+      // relaciones
+    });
+
+luego en postman 
+
+http://localhost:3001/api/products?limit=2&offset=2
+
+y listo tengo paginacion
