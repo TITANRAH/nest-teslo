@@ -88,3 +88,41 @@ luego en postman
 http://localhost:3001/api/products?limit=2&offset=2
 
 y listo tengo paginacion
+
+
+upload file
+
+https://docs.nestjs.com/techniques/file-upload
+
+instalar tipos de multer 
+
+npm i -D @types/multer
+
+creo un nuevo res nest g res files --no-spec
+
+y elimino todos los endpoints del controller y metodos del servicio
+
+asi queda la funcion para obtener file 
+
+ @UseInterceptors(FileInterceptor('file'))
+  uploadProductFile( @UploadedFile() file: Express.Multer.File){
+
+    console.log(file);
+    
+    return file
+  }
+
+creo umn helper para discriminar que sean solo imagnees los archivos a subir
+
+
+en caso de que las imagenes no cambien subir a una carpta public y carpeta products las inagenes 
+
+e uinstlar 
+
+npm i @nestjs/serve-static 
+
+en el import de los app module 
+
+ ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
