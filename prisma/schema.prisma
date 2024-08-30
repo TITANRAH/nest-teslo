@@ -8,16 +8,17 @@ datasource db {
 }
 
 model Product {
-  id           String         @id @default(uuid())
-  title        String         @unique
-  price        Int?           @default(0)
-  description  String?
-  slug         String?        @unique
-  stock        Int?           @default(0)
-  sizes        String[]
-  gender       String
-  tags         String[]       @default([])
-  images ProductImage[]
+  id          String         @id @default(uuid())
+  title       String         @unique
+  price       Int?           @default(0)
+  description String?
+  slug        String?        @unique
+  stock       Int?           @default(0)
+  sizes       String[]
+  gender      String
+  type        String?
+  tags        String[]       @default([])
+  images      ProductImage[]
 }
 
 model ProductImage {

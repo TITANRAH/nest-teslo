@@ -10,6 +10,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { Product, ProductImage } from '@prisma/client';
 import { validate as isUUID } from 'uuid';
+import { UpdateImageDto } from 'src/common/dtos/update-image.dto';
 
 @Injectable()
 export class ProductsService {
@@ -128,8 +129,10 @@ export class ProductsService {
   // este dto de updateProduct todas las propiedads de createproductdto pero las hace opcionales
   // por lo que puedo enviar solo titulo o el campo que sea a actualizar o todos los campos si quisiera
   async update(id: string, updateProductDto: UpdateProductDto) {
+    const { images, ...toUpdate } = updateProductDto;
 
-    const {images, ...rest} = updateProductDto;
+    console.log(images);
+
     if (!updateProductDto.slug) {
       updateProductDto.slug = updateProductDto.title
         .toLowerCase()
@@ -145,17 +148,58 @@ export class ProductsService {
     console.log(updateProductDto);
 
     try {
-      const product = await this.prismaService.product.update({
-        where: { id: id },
-        data: rest,
-        include: {
-          images: true,
-        }
-      });
-      if (!product)
-        throw new NotFoundException(`Producto con el id: ${id} no encontrado`);
+      // create query
+      if (images) {
+        // delete all images
+        const deleteImages = await this.prismaService.productImage.deleteMany({
+          where: {
+            productId: id,
+          },
+        });
 
-      return product;
+        console.log(deleteImages);
+
+        // create new images
+        const newImages = await this.prismaService.productImage.createMany({
+          data: images.map((url) => ({
+            productId: id,
+            url,
+          })),
+        });
+
+        console.log(newImages);
+
+        const product = await this.prismaService.product.update({
+          where: { id: id },
+          data: { id, ...toUpdate },
+          include: {
+            images: true,
+          },
+        });
+        if (!product)
+          throw new NotFoundException(
+            `Producto con el id: ${id} no encontrado`,
+          );
+
+        console.log(product);
+        return product;
+      } else {
+        const product = await this.prismaService.product.update({
+          where: { id: id },
+          data: { id, ...toUpdate },
+          include: {
+            images: true,
+          },
+        });
+        if (!product)
+          throw new NotFoundException(
+            `Producto con el id: ${id} no encontrado`,
+          );
+
+        return product;
+      }
+
+      // return { ...product };
     } catch (error) {
       console.log(error.message);
       throw new InternalServerErrorException(error.message);
@@ -202,9 +246,7 @@ export class ProductsService {
       // console.log(error);
 
       if (error.code === 'P2025') {
-        throw new NotFoundException(
-          `imagen con el id ${id} no encontrada`,
-        );
+        throw new NotFoundException(`imagen con el id ${id} no encontrada`);
       }
       throw new InternalServerErrorException(
         'Error al eliminar la imagen',
@@ -215,5 +257,24 @@ export class ProductsService {
 
   deleteAll() {
     return this.prismaService.product.deleteMany();
+  }
+
+  async updateImage(id: string, updateImageDto: UpdateImageDto) {
+    console.log({ id, updateImageDto });
+
+    console.log('entro');
+
+    try {
+      const image = await this.prismaService.productImage.update({
+        where: { id: id },
+        data: { url: updateImageDto.url },
+      });
+      if (!image)
+        throw new NotFoundException(`Imagen con el id: ${id} no encontrada`);
+      return image;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('msg: Error', error.message);
+    }
   }
 }

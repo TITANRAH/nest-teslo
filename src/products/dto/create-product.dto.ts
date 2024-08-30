@@ -33,6 +33,10 @@ export class CreateProductDto {
   @IsString()
   slug?: string;
 
+  @IsOptional()
+  @IsString()
+  type?: string;
+
   //   each signfica que cada elemento tiene que ser en arreglo
   @IsString({ each: true })
   @IsArray()
@@ -50,4 +54,6 @@ export class CreateProductDto {
   @IsArray()
   @IsOptional()
   images?: string[]; 
+
+
 }

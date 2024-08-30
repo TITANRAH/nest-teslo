@@ -13,6 +13,7 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { UpdateImageDto } from 'src/common/dtos/update-image.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -58,8 +59,8 @@ export class ProductsController {
     return this.productsService.removeImage(id);
   }
 
-  // @Patch('/image/:id')
-  // updateImage(@Param('id', ParseUUIDPipe) id: string, @Body() updateProductDto: UpdateProductDto) {
-  //   return this.productsService.updateImage(id, updateProductDto);
-  // }
+  @Patch('/image/:id')
+  updateImage(@Param('id', ParseUUIDPipe) id: string, @Body() updateImageDto: UpdateImageDto) {
+    return this.productsService.updateImage(id, updateImageDto);
+  }
 }
